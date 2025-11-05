@@ -1,9 +1,87 @@
 'use client';
 
+import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().min(3, "Cuéntanos tu nombre"),
+  email: z.string().email("Correo inválido"),
+  role: z.string().min(1, "Selecciona tu rol"),
+  interest: z.string().min(1, "Selecciona un interés"),
+  message: z
+    .string()
+    .min(10, "Comparte al menos 10 caracteres")
+    .max(600, "Mantén el mensaje breve (600 caracteres)"),
+});
+
+type ContactFormState = z.infer<typeof contactSchema>;
+
+const defaultValues: ContactFormState = {
+  name: "",
+  email: "",
+  role: "",
+  interest: "",
+  message: "",
+};
 
 const FooterSection = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [formValues, setFormValues] = useState<ContactFormState>(defaultValues);
+  const [formErrors, setFormErrors] = useState<Record<keyof ContactFormState, string>>({
+    name: "",
+    email: "",
+    role: "",
+    interest: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (field: keyof ContactFormState) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: event.target.value,
+    }));
+    setFormErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const result = contactSchema.safeParse(formValues);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setFormErrors({
+        name: fieldErrors.name?.[0] ?? "",
+        email: fieldErrors.email?.[0] ?? "",
+        role: fieldErrors.role?.[0] ?? "",
+        interest: fieldErrors.interest?.[0] ?? "",
+        message: fieldErrors.message?.[0] ?? "",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { name, email, role, interest, message } = result.data;
+    const subject = `Quiero hablar con Pupilo - ${name}`;
+    const body = [
+      `Nombre completo: ${name}`,
+      `Correo: ${email}`,
+      `Rol principal: ${role}`,
+      `Interés principal: ${interest}`,
+      "",
+      "Mensaje:",
+      message,
+    ].join("\n");
+
+    window.location.href = `mailto:pupiloaprendeyjuega@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setIsSubmitting(false);
+  };
 
   return (
     <section className="footer-section">
@@ -28,21 +106,35 @@ const FooterSection = () => {
                 Compártenos tus datos para adaptar una demo y enviarte recursos según tus necesidades.
               </p>
 
-              <form className="wave-contact-form" onSubmit={(e) => e.preventDefault()}>
+              <form className="wave-contact-form" onSubmit={handleSubmit} noValidate>
                 <div className="wave-form-grid">
                   <label className="wave-field">
                     <span>Nombre completo</span>
-                    <input type="text" placeholder="Carolina Mejía" required />
+                    <input
+                      type="text"
+                      placeholder="Carolina Mejía"
+                      value={formValues.name}
+                      onChange={handleChange("name")}
+                      required
+                    />
+                    {formErrors.name && <small className="wave-error">{formErrors.name}</small>}
                   </label>
 
                   <label className="wave-field">
                     <span>Correo electrónico</span>
-                    <input type="email" placeholder="carolina@fundacion.org" required />
+                    <input
+                      type="email"
+                      placeholder="carolina@fundacion.org"
+                      value={formValues.email}
+                      onChange={handleChange("email")}
+                      required
+                    />
+                    {formErrors.email && <small className="wave-error">{formErrors.email}</small>}
                   </label>
 
                   <label className="wave-field">
                     <span>Rol principal</span>
-                    <select defaultValue="">
+                    <select value={formValues.role} onChange={handleChange("role")} required>
                       <option value="" disabled>
                         Selecciona una opción
                       </option>
@@ -50,12 +142,16 @@ const FooterSection = () => {
                       <option>Terapeuta / Docente</option>
                       <option>Padre / Madre de familia</option>
                       <option>Aliado tecnológico</option>
+                      <option>Investigación / Academia</option>
+                      <option>Sector público / ONG</option>
+                      <option>Inversionista / Partners</option>
                     </select>
+                    {formErrors.role && <small className="wave-error">{formErrors.role}</small>}
                   </label>
 
                   <label className="wave-field">
                     <span>Interés principal</span>
-                    <select defaultValue="">
+                    <select value={formValues.interest} onChange={handleChange("interest")} required>
                       <option value="" disabled>
                         ¿Qué te gustaría explorar?
                       </option>
@@ -63,7 +159,11 @@ const FooterSection = () => {
                       <option>Actividades personalizadas para mi hijo/a</option>
                       <option>Alianzas y contenidos terapéuticos</option>
                       <option>Prensa / Difusión</option>
+                      <option>Capacitaciones y talleres para equipos</option>
+                      <option>Integraciones tecnológicas</option>
+                      <option>Simplemente me encantó el proyecto</option>
                     </select>
+                    {formErrors.interest && <small className="wave-error">{formErrors.interest}</small>}
                   </label>
                 </div>
 
@@ -72,11 +172,16 @@ const FooterSection = () => {
                   <textarea
                     placeholder="Ej. Buscamos ejercicios que apoyen sesiones grupales de niños 6-9 años..."
                     rows={3}
-                  />
+                    value={formValues.message}
+                    onChange={handleChange("message")}
+                    />
+                  {formErrors.message && <small className="wave-error">{formErrors.message}</small>}
                 </label>
 
                 <div className="wave-form-actions">
-                  <button type="submit">Quiero hablar con Pupilo</button>
+                  <button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Enviando..." : "Quiero hablar con Pupilo"}
+                  </button>
                   <small>Te contactaremos en máximo 24 horas hábiles.</small>
                 </div>
               </form>
@@ -109,7 +214,7 @@ const FooterSection = () => {
               <a className="social-btn" href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
                 <img src="/images/yt.svg" alt="" />
               </a>
-              <a className="social-btn" href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <a className="social-btn" href="https://www.instagram.com/pupilo_juegayaprende/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noreferrer" aria-label="Instagram">
                 <img src="/images/insta.svg" alt="" />
               </a>
               <a className="social-btn" href="https://tiktok.com" target="_blank" rel="noreferrer" aria-label="TikTok">
