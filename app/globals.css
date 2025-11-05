@@ -253,14 +253,94 @@ body::-webkit-scrollbar {
     @apply relative w-full h-[120dvh];
     background-color: var(--color-warm-base);
 
+
+
     .pin-box {
       @apply flex items-center justify-center w-full ps-52 absolute 2xl:bottom-32 bottom-[50vh];
 
       .vd-card {
-        @apply md:w-96 w-80 flex-none md:rounded-[2vw] rounded-3xl -ms-44 overflow-hidden 2xl:relative absolute border-[.5vw];
-        border-color: var(--color-highlight);
+        @apply md:w-[26rem] w-[20rem] md:h-[30rem] h-[26rem] flex-none md:rounded-[40px] rounded-[32px] -ms-44 overflow-hidden 2xl:relative absolute border-[6px] border-transparent shadow-[0_45px_85px_-50px_rgba(39,24,126,0.6)];
+        background: linear-gradient(145deg, rgba(255,255,255,0.88) 0%, rgba(239,243,255,0.72) 45%, rgba(205,212,255,0.6) 100%);
+        backdrop-filter: blur(22px);
+      }
+
+      .vd-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(254,198,1,0.8), rgba(117,139,253,0.55), rgba(39,24,126,0.45));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      .review-card {
+        @apply relative px-10 py-12 text-[#27187e] flex flex-col gap-8 h-full;
+
+        .review-stars {
+          @apply text-3xl tracking-[0.3em] text-[#fec601] drop-shadow-[0_8px_18px_rgba(254,198,1,0.42)];
+        }
+
+        .review-content {
+          @apply flex flex-col justify-between h-full gap-8;
+
+          p {
+            @apply text-lg leading-relaxed font-paragraph text-[#2f2fa2];
+          }
+
+          footer {
+            @apply flex flex-col text-sm font-semibold uppercase tracking-[0.22em] text-[#4059ad];
+
+            span {
+              @apply mt-1 normal-case tracking-normal font-paragraph text-[#5f6ae3];
+            }
+          }
+        }
+      }
+
+      .therapist-card {
+        @apply relative flex flex-col h-full;
+
+        .therapist-photo {
+          @apply w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(.26,1,.48,1)] scale-[1.03] hover:scale-[1.12];
+        }
+
+        figcaption {
+          @apply absolute inset-x-6 bottom-6 rounded-[20px] bg-white/85 backdrop-blur-xl px-6 py-5 text-[#2f2fa2] flex flex-col gap-1 shadow-[0_25px_45px_-28px_rgba(39,24,126,0.55)];
+
+          strong {
+            @apply text-sm font-semibold uppercase tracking-[0.28em];
+          }
+
+          span {
+            @apply text-xs font-paragraph text-[#5560d1];
+          }
+        }
+      }
+
+      .review-card--glow::after,
+      .therapist-card--glow::after {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: inherit;
+        background: radial-gradient(circle at top right, rgba(254,198,1,0.35), transparent 55%),
+          radial-gradient(circle at bottom left, rgba(117,139,253,0.32), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+      }
+
+      .vd-card:hover::after,
+      .review-card--glow:hover::after,
+      .therapist-card--glow:hover::after {
+        opacity: 1;
       }
     }
+
 
     h1 {
       @apply uppercase text-[20.5vw] leading-[105%] tracking-[-.4vw] ml-[2vw] font-bold;

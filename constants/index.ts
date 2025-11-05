@@ -72,12 +72,12 @@ const flavorlists: FlavorInfo[] = [
   },
   {
     name: "Mi Héroe del Día",
-    color: "white",
+    color: "perro",
     rotation: "md:rotate-[-8deg] rotate-0",
     art: {
-      background: "/images/white-bg.svg",
-      character: "/images/white-drink.webp",
-      elements: "/images/white-elements.webp",
+      background: "/images/perro-bg.svg",
+      character: "/images/perro-pj.svg",
+      elements: "/images/perro-elements.svg",
     },
   },
   {
