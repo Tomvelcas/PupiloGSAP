@@ -2,6 +2,17 @@ export type FlavorInfo = {
   name: string;
   color: string;
   rotation: string;
+  art: {
+    background: string;
+    character: string;
+    elements: string;
+  };
+  classes?: {
+    container?: string;
+    background?: string;
+    character?: string;
+    elements?: string;
+  };
 };
 
 export type NutrientInfo = {
@@ -19,34 +30,65 @@ export type TestimonialCard = {
 
 const flavorlists: FlavorInfo[] = [
   {
-    name: "El Intruso",
-    color: "brown",
+    name: "Bosque Encantado",
+    color: "hongo",
     rotation: "md:rotate-[-8deg] rotate-0",
+    art: {
+      background: "/images/hongo-bg.svg",
+      character: "/images/hongo-pj.svg",
+      elements: "/images/hongo-elements.svg",
+    },
+
   },
   {
     name: "Busca el Objeto",
-    color: "red",
+    color: "dragon",
     rotation: "md:rotate-[8deg] rotate-0",
+    art: {
+      background: "/images/dragon-bg.svg",
+      character: "/images/dragon-pj.svg",
+      elements: "/images/dragon-elements.svg",
+    },
   },
   {
     name: "Encaja y Aprende",
-    color: "blue",
+    color: "sirena",
     rotation: "md:rotate-[-8deg] rotate-0",
+    art: {
+      background: "/images/sirena-bg.svg",
+      character: "/images/sirena-pj.svg",
+      elements: "/images/sirena-elements.svg",
+    },
   },
   {
     name: "Sonidos y Palabras",
     color: "orange",
     rotation: "md:rotate-[8deg] rotate-0",
+    art: {
+      background: "/images/orange-bg.svg",
+      character: "/images/orange-drink.webp",
+      elements: "/images/orange-elements.webp",
+    },
   },
   {
     name: "Mi Héroe del Día",
     color: "white",
     rotation: "md:rotate-[-8deg] rotate-0",
+    art: {
+      background: "/images/white-bg.svg",
+      character: "/images/white-drink.webp",
+      elements: "/images/white-elements.webp",
+    },
   },
   {
     name: "Baila con Ritmo",
     color: "black",
     rotation: "md:rotate-[8deg] rotate-0",
+    art: {
+      background: "/images/black-bg.svg",
+      character: "/images/black-drink.webp",
+      elements: "/images/black-elements.webp",
+    },
   },
 ];
 

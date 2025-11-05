@@ -18,24 +18,25 @@ const FooterSection = () => {
       <div className="2xl:h-[110dvh] relative md:pt-[20vh] pt-[10vh]">
         <div className="overflow-hidden z-10">
           <h1 className="general-title text-center text-milk py-5">
-            #JUEGAENFAMILIA
+            #Juntos Es Más Fácil
           </h1>
         </div>
 
         {isMobile ? (
           <img
-            src="/images/footer-drink.png"
+            src="/images/hongo-pj.png"
             alt="footer drink"
             className="absolute top-0 object-contain"
           />
         ) : (
-          <video
-            src="/videos/splash.mp4"
-            autoPlay
-            playsInline
-            muted
-            className="absolute top-0 object-contain mix-blend-lighten"
-          />
+           <div className="relative w-full h-[60vh] overflow-hidden">
+      <img
+        src="/videos/hongo-2.gif"
+        alt=""
+        className="absolute inset-0 w-full h-full object-contain mix-blend-lighten pointer-events-none select-none"
+      />
+      <div className="relative z-10">...</div>
+    </div>
         )}
 
         <div className="flex-center gap-5 relative z-10 md:mt-20 mt-5">

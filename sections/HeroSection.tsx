@@ -3,6 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
+import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 
 const HeroSection = () => {
@@ -90,7 +91,7 @@ const HeroSection = () => {
         )}
         <div className="hero-content opacity-0">
           <div className="overflow-hidden">
-            <h1 className="hero-title">Aventuras Luminosas</h1>
+            <h1 className="hero-title">Pupilo</h1>
           </div>
           <div
             style={{
@@ -109,8 +110,10 @@ const HeroSection = () => {
             terapeutas.
           </h2>
 
-          <div className="hero-button">
-            <p>Inicia sesión</p>
+          <div className="hero-cta-group">
+            <Link href="/login" className="hero-cta-button">
+              Iniciar sesión
+            </Link>
           </div>
         </div>
       </div>
