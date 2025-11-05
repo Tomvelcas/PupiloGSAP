@@ -682,6 +682,7 @@ body::-webkit-scrollbar {
 
 
 
+
     .pin-box {
       @apply flex items-center justify-center w-full ps-52 absolute 2xl:bottom-32 bottom-[50vh];
 
@@ -776,6 +777,120 @@ body::-webkit-scrollbar {
 
   .footer-section {
     @apply 2xl:min-h-dvh overflow-hidden relative bg-[#222123];
+
+    .footer-gif-wrapper {
+      @apply absolute inset-x-0 top-[12%] w-full h-[55vh] flex justify-center pointer-events-none;
+      z-index: 0;
+    }
+
+    .footer-gif {
+      @apply max-w-[60vw] w-full h-full object-contain opacity-70 mix-blend-lighten select-none;
+    }
+
+    .wave-contact {
+      @apply relative mx-auto max-w-5xl px-10 py-12 text-center font-paragraph text-milk rounded-[36px] border border-white/15;
+      background:
+        radial-gradient(circle at 12% -5%, rgba(255, 214, 99, 0.42), transparent 55%),
+        linear-gradient(135deg, rgba(117,139,253,0.55), rgba(64,89,173,0.78));
+      box-shadow: 0 42px 110px -48px rgba(20, 16, 38, 0.7);
+      backdrop-filter: blur(24px);
+      z-index: 10;
+    }
+
+    .wave-contact h2 {
+      @apply text-3xl md:text-4xl font-semibold uppercase tracking-[0.28em];
+    }
+
+    .wave-contact p {
+      @apply mt-3 text-base md:text-lg text-[#f7f7ffcc];
+    }
+
+    .wave-contact ul {
+      @apply mt-10 grid md:grid-cols-3 gap-5 text-left;
+    }
+
+    .wave-contact li {
+      @apply flex flex-col gap-1 rounded-2xl bg-white/12 border border-white/20 p-5 backdrop-blur-2xl text-left;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+    }
+
+    .wave-contact span {
+      @apply text-2xl;
+    }
+
+    .wave-contact a {
+      @apply text-milk font-semibold underline-offset-4 hover:underline;
+    }
+
+    .wave-contact-form {
+      @apply mt-7 flex flex-col gap-6;
+    }
+
+    .wave-form-grid {
+      @apply grid gap-5 md:grid-cols-2;
+    }
+
+    .wave-field {
+      @apply flex flex-col gap-2 text-left;
+    }
+
+    .wave-field span {
+      @apply text-xs font-semibold uppercase tracking-[0.26em] text-[#fdf5ce];
+    }
+
+    .wave-field input,
+    .wave-field select,
+    .wave-field textarea {
+      @apply w-full rounded-2xl bg-white/90 text-[#27187e] font-paragraph text-sm md:text-base px-5 py-4 outline-none border border-transparent transition;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 18px 40px -28px rgba(12, 9, 32, 0.55);
+    }
+
+    .wave-field select,
+    .wave-field textarea {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .wave-field input:focus,
+    .wave-field select:focus,
+    .wave-field textarea:focus {
+      border-color: rgba(254, 198, 1, 0.65);
+      box-shadow: inset 0 0 0 1px rgba(254, 198, 1, 0.45), 0 24px 48px -28px rgba(254, 198, 1, 0.45);
+    }
+
+    .wave-field--textarea textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .wave-form-actions {
+      @apply flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6;
+    }
+
+    .wave-form-actions button {
+      @apply inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold uppercase tracking-[0.22em] text-[#1f1c31];
+      background: linear-gradient(135deg, #ffd563 0%, #fec601 70%, #f3b001 100%);
+      box-shadow:
+        inset 0 2px 6px rgba(255, 255, 255, 0.25),
+        inset 0 -8px 16px rgba(34, 22, 32, 0.4),
+        0 26px 58px -28px rgba(254, 198, 1, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .wave-form-actions button:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        inset 0 2px 8px rgba(255, 255, 255, 0.35),
+        inset 0 -10px 18px rgba(34, 22, 32, 0.5),
+        0 35px 65px -32px rgba(254, 198, 1, 0.65);
+    }
+
+    .wave-form-actions small {
+      @apply text-xs text-[#fef1b6cc];
+    }
+
+    .wave-contact small {
+      @apply text-xs text-[#d9dbffcc];
+    }
 
     .social-btn {
       @apply border border-[#f4f6ff33] md:size-[5vw] size-14 md:p-0 p-3 flex justify-center items-center rounded-full hover:bg-[#ffffff1a] transition-colors cursor-pointer;
