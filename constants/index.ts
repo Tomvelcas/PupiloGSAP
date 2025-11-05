@@ -41,7 +41,7 @@ const flavorlists: FlavorInfo[] = [
 
   },
   {
-    name: "Busca el Objeto",
+    name: "Montaña del Dragón",
     color: "dragon",
     rotation: "md:rotate-[8deg] rotate-0",
     art: {
@@ -51,7 +51,7 @@ const flavorlists: FlavorInfo[] = [
     },
   },
   {
-    name: "Encaja y Aprende",
+    name: "Imperio del Océano",
     color: "sirena",
     rotation: "md:rotate-[-8deg] rotate-0",
     art: {
@@ -61,13 +61,13 @@ const flavorlists: FlavorInfo[] = [
     },
   },
   {
-    name: "Sonidos y Palabras",
-    color: "orange",
+    name: "Tundra del Tiempo Congelado",
+    color: "pinguino",
     rotation: "md:rotate-[8deg] rotate-0",
     art: {
-      background: "/images/orange-bg.svg",
-      character: "/images/orange-drink.webp",
-      elements: "/images/orange-elements.webp",
+      background: "/images/pinguino-bg.svg",
+      character: "/images/pinguino-pj.svg",
+      elements: "/images/pinguino-elements.svg",
     },
   },
   {

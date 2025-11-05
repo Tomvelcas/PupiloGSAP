@@ -10,12 +10,21 @@ import { nutrientLists, type NutrientInfo } from "@/constants";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const TROPHY_IMAGES = [
-  "/images/trophies/trophy-1.png",
-  "/images/trophies/trophy-2.png",
-  "/images/trophies/trophy-3.png",
-  "/images/trophies/trophy-4.png",
-  "/images/trophies/trophy-5.png",
-  "/images/trophies/trophy-6.png",
+  "/trofeos/trofeo1.png",
+  "/trofeos/trofeo2.png",
+  "/trofeos/trofeo3.png",
+  "/trofeos/trofeo4.png",
+  "/trofeos/trofeo5.png",
+  "/trofeos/trofeo6.png",
+];
+
+const TROPHY_BACKDROPS = [
+  "/images/fondo1.webp",
+  "/images/fondo2.webp",
+  "/images/fondo3.webp",
+  "/images/fondo4.webp",
+  "/images/fondo5.webp",
+  "/images/fondo6.webp",
 ];
 
 const NutritionSection = () => {
@@ -36,6 +45,7 @@ const NutritionSection = () => {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const openTlRef = useRef<gsap.core.Timeline | null>(null);
   const loopTlRef = useRef<gsap.core.Timeline | null>(null);
+  const glowTlRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     setLists(isMobile ? nutrientLists.slice(0, 3) : nutrientLists);
@@ -119,7 +129,8 @@ const NutritionSection = () => {
 
     gsap.set(panel, { opacity: 0, y: 10, pointerEvents: "none", display: "none" });
 
-    const openTl = gsap.timeline({ paused: true })
+    const openTl = gsap
+      .timeline({ paused: true })
       .set(panel, { display: "block" })
       .to(panel, { opacity: 1, y: 0, pointerEvents: "auto", duration: 0.28, ease: "power2.out" });
     openTlRef.current = openTl;
@@ -128,13 +139,38 @@ const NutritionSection = () => {
     const gap = 20;
     const totalW = (cardW + gap) * TROPHY_IMAGES.length;
 
+    const parent = track.parentElement;
     const cloned = track.cloneNode(true) as HTMLDivElement;
-    track.parentElement?.appendChild(cloned);
+    parent?.appendChild(cloned);
 
     const duration = matchMedia('(max-width: 768px)').matches ? 12 : 18;
     const loopTl = gsap.timeline({ repeat: -1, defaults: { ease: "none" }, paused: true });
     loopTl.to([track, cloned], { x: -totalW, duration }).set([track, cloned], { x: 0 });
     loopTlRef.current = loopTl;
+
+    const glowItems = panel.querySelectorAll<HTMLElement>(".trophy-glow");
+    if (glowItems.length) {
+      const glowTl = gsap
+        .timeline({ repeat: -1, yoyo: true, paused: true })
+        .to(glowItems, {
+          opacity: 0.55,
+          scale: 1.04,
+          duration: 1.6,
+          stagger: 0.1,
+          ease: "sine.inOut",
+        })
+        .to(
+          glowItems,
+          {
+            opacity: 0.12,
+            scale: 1,
+            duration: 1.6,
+            ease: "sine.inOut",
+          },
+          0.5
+        );
+      glowTlRef.current = glowTl;
+    }
 
     // Tilt 3D leve (desktop)
     const handleTilt = (e: MouseEvent) => {
@@ -158,18 +194,44 @@ const NutritionSection = () => {
       gsap.to(panel.querySelectorAll(".trophy-card"), { rotateX: 0, rotateY: 0, duration: 0.3, ease: "power2.out" });
     };
 
-    const enter = () => { openTl.play(); loopTl.play(); };
-    const leave = () => { openTl.reverse(); loopTl.pause(); resetTilt(); };
+    const enter = () => {
+      openTl.play();
+      loopTl.play();
+      glowTlRef.current?.play();
+    };
+    const leave = () => {
+      openTl.reverse();
+      loopTl.pause();
+      glowTlRef.current?.pause();
+      resetTilt();
+    };
+
+    const cleanupBase = () => {
+      openTl.kill();
+      loopTl.kill();
+      glowTlRef.current?.kill();
+      cloned.remove();
+    };
 
     const isTouch = matchMedia('(pointer: coarse)').matches;
     if (isTouch) {
       const toggle = () => {
         const visible = Number(gsap.getProperty(panel, "opacity")) > 0.5;
-        if (visible) { openTl.reverse(); loopTl.pause(); }
-        else { openTl.play(); loopTl.play(); }
+        if (visible) {
+          openTl.reverse();
+          loopTl.pause();
+          glowTlRef.current?.pause();
+        } else {
+          openTl.play();
+          loopTl.play();
+          glowTlRef.current?.play();
+        }
       };
       pill.addEventListener("click", toggle);
-      return () => pill.removeEventListener("click", toggle);
+      return () => {
+        pill.removeEventListener("click", toggle);
+        cleanupBase();
+      };
     } else {
       pill.addEventListener("mouseenter", enter);
       pill.addEventListener("mouseleave", leave);
@@ -182,6 +244,7 @@ const NutritionSection = () => {
         panel.removeEventListener("mouseenter", enter);
         panel.removeEventListener("mouseleave", leave);
         panel.removeEventListener("mousemove", handleTilt);
+        cleanupBase();
       };
     }
   }, []);
@@ -203,16 +266,15 @@ const NutritionSection = () => {
       <div className="relative z-10 md:px-10 px-5 mt-10 md:mt-16">
         <div className="general-title relative flex flex-col justify-center items-start gap-24">
           <div className="overflow-hidden">
-            <h1 className="nutrition-title [text-shadow:_0_1px_0_#27187E,_0_2px_0_#27187E,_0_6px_18px_rgba(39,24,126,0.35)]
-">Crecemos contigo</h1>
+            <h1 className="nutrition-title [text-shadow:_0_1px_0_#27187E,_0_2px_0_#27187E,_0_6px_18px_rgba(39,24,126,0.35)]">
+              Crecemos contigo</h1>
           </div>
           <div
             style={{ clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)" }}
-            className="nutrition-text-scroll [text-shadow:_0_1px_0_#758BFD,_0_2px_0_#758BFD,_0_6px_18px_rgba(117,139,253,0.35)]
- "
+            className="nutrition-text-scroll [text-shadow:_0_1px_0_#758BFD,_0_2px_0_#758BFD,_0_6px_18px_rgba(117,139,253,0.35)]"
           >
             <div className="bg-yellow-brown pb-5 md:pt-0 pt-3 md:px-5 px-3 ">
-              <h2 className=" --color-highlight ">Amigos unidos</h2>
+              <h2 className="text-highlight">Amigos unidos</h2>
             </div>
           </div>
         </div>
@@ -259,41 +321,99 @@ const NutritionSection = () => {
               <div
                 ref={panelRef}
                 className="
-                  absolute md:right-0 md:left-auto left-0 /* en desktop se alinea al borde derecho del card */
-                  mt-3 w-[min(92vw,600px)]
-                  rounded-2xl bg-white/95 backdrop-blur border border-[#e1e6ff] shadow-2xl p-4 z-30
-                  origin-top-right
+                  absolute md:right-0 md:left-auto left-0
+                  mt-3 w-[min(92vw,620px)]
+                  rounded-3xl bg-gradient-to-br from-white/95 via-[#eef1ff]/95 to-[#dfe4ff]/90
+                  backdrop-blur border border-white/70 shadow-[0_25px_65px_-35px_rgba(39,24,126,0.55)]
+                  p-5 md:p-6 z-30 origin-top-right
                 "
               >
-                <div className="text-xs font-paragraph text-[#6b7ae0] mb-2">Trofeos y logros Pupilo</div>
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#758bfd] via-[#aeb8fe] to-[#27187e] shadow-[0_18px_32px_-18px_rgba(39,24,126,0.6)]">
+                      <img
+                        src="/images/pupilo-icono.png"
+                        alt="Icono Pupilo"
+                        className="h-9 w-9 object-contain drop-shadow-[0_6px_10px_rgba(39,24,126,0.35)]"
+                      />
+                    </span>
+                    <div>
+                      <p className="text-[0.7rem] uppercase tracking-[0.28em] text-[#7180e9] font-semibold mb-1">
+                        Logros destacados
+                      </p>
+                      <p className="text-sm md:text-base font-paragraph text-[#2f2fa2]">
+                        Trofeos y sonrisas desbloqueadas
+                      </p>
+                    </div>
+                  </div>
+                  <span className="hidden md:inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-1 text-xs font-semibold text-[#4059ad] shadow-sm">
+                    Colección activa
+                    <span className="inline-flex size-5 items-center justify-center rounded-full bg-[#fec601] text-[#222123] text-[0.65rem]">
+                      {TROPHY_IMAGES.length}
+                    </span>
+                  </span>
+                </div>
 
                 <div
-                  className="relative overflow-hidden"
+                  className="relative overflow-hidden rounded-2xl border border-[#e1e6ff]/70 bg-white/75 p-3"
                   style={{
-                    WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
-                    maskImage: "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
+                    maskImage: "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
                   }}
                 >
-                  <div className="flex gap-5 will-change-transform">
-                    {/* Track principal */}
-                    <div ref={trackRef} className="flex gap-5">
-                      {TROPHY_IMAGES.map((src, i) => (
-                        <div
-                          key={`t-${i}`}
-                          className="trophy-card w-[120px] h-[120px] md:w-[160px] md:h-[160px] flex-none rounded-2xl relative p-[1px]
-                                     [background:conic-gradient(from_180deg_at_50%_50%,#c7d2ff,transparent_35%,transparent_65%,#aeb8fe)]"
-                          style={{ transformStyle: "preserve-3d" }}
-                        >
-                          <div className="rounded-2xl h-full w-full bg-white/98 grid place-items-center border border-[#e1e6ff] transition-transform duration-300">
-                            <img src={src} alt={`trofeo ${i + 1}`} className="w-[78%] h-[78%] object-contain transition-transform duration-300" />
+                  <div className="absolute inset-y-4 left-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                  <div className="absolute inset-y-4 right-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+
+                  <div className="flex gap-7 will-change-transform">
+                    <div ref={trackRef} className="flex gap-7">
+                      {TROPHY_IMAGES.map((src, i) => {
+                        const backdrop = TROPHY_BACKDROPS[i % TROPHY_BACKDROPS.length];
+                        return (
+                          <div
+                            key={`t-${i}`}
+                            className="trophy-card group/trophy relative w-[130px] h-[130px] md:w-[190px] md:h-[190px] flex-none"
+                            style={{ transformStyle: "preserve-3d" }}
+                          >
+                            <div className="absolute inset-0 rounded-[28px] opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-300 pointer-events-none bg-[radial-gradient(circle_at_top,_rgba(254,198,1,0.58)_0%,_rgba(39,24,126,0)_75%)] blur-[2px]" />
+                            <div className="relative h-full w-full rounded-[28px] p-[3px] bg-gradient-to-br from-[#27187e] via-[#758bfd] to-[#fec601] shadow-[0_28px_50px_-28px_rgba(39,24,126,0.78)]">
+                              <div className="relative h-full w-full overflow-hidden rounded-[24px] border border-white/80 bg-black/15 backdrop-blur-sm flex flex-col items-center justify-center">
+                                <img
+                                  src={backdrop}
+                                  alt={`Escenario Pupilo ${i + 1}`}
+                                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(.19,1,.22,1)] scale-[1.08] group-hover/trophy:scale-[1.24]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#02010a]/75 via-[#27187e]/45 to-transparent mix-blend-multiply" />
+                                <div className="absolute inset-0 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-300 bg-[linear-gradient(135deg,rgba(117,139,253,0.45)_0%,rgba(254,198,1,0.68)_40%,rgba(255,255,255,0)_85%)]" />
+
+                                <span className="relative z-10 self-start mt-2 ml-2 rounded-full bg-white/90 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-[#27187e] shadow-[0_12px_24px_-18px_rgba(39,24,126,0.55)]">
+                                  Logro {i + 1}
+                                </span>
+
+                                <div className="relative z-10 flex items-center justify-center pt-2">
+                                  <span className="pointer-events-none absolute inset-[-28%] bg-[radial-gradient(circle,_rgba(254,198,1,0.38)_0%,_rgba(118,129,255,0)_70%)] blur-[36px]" />
+                                  <img
+                                    src={src}
+                                    alt={`trofeo ${i + 1}`}
+                                    className="relative w-[78%] h-[78%] object-contain drop-shadow-[0_34px_36px_rgba(39,24,126,0.32),0_20px_24px_rgba(254,198,1,0.22)] transition-transform duration-450 ease-[cubic-bezier(.22,1,.36,1)] group-hover/trophy:-translate-y-3 group-hover/trophy:scale-[1.16]"
+                                  />
+                                </div>
+
+                                <span className="trophy-glow pointer-events-none absolute inset-[11%] rounded-[20px] border border-white/75 opacity-0 shadow-[0_28px_40px_-20px_rgba(254,198,1,0.78)]" />
+                                <span className="pointer-events-none absolute bottom-3 right-3 text-xs text-white/90 font-semibold tracking-[0.2em] uppercase">
+                                  Pupilo
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.55),transparent)]" />
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                    {/* El clon se crea en useEffect para el loop */}
                   </div>
                 </div>
+
+                <p className="mt-5 text-xs md:text-sm leading-relaxed text-[#5a68d8] font-paragraph">
+                  Cada trofeo celebra avances únicos: desde completar misiones sensoriales hasta liderar aventuras colaborativas con otros Pupilos.
+                </p>
               </div>
             </div>
           </div>
