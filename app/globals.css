@@ -224,7 +224,7 @@ body::-webkit-scrollbar {
     }
 
     .fourth-title {
-      @apply rotate-[-5deg] md:-translate-y-12;
+       @apply rotate-[-5deg] md:-translate-y-12;
     }
 
     .vd-pin-section {

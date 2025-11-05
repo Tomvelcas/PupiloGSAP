@@ -41,6 +41,13 @@ const BenefitSection = () => {
         opacity: 1,
         clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
         ease: "circ.out",
+      })
+      // NUEVO: animación del quinto beneficio
+      .to(".benefit-section .fifth-title", {
+        duration: 1,
+        opacity: 1,
+        clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
+        ease: "circ.out",
       });
   });
 
@@ -80,6 +87,14 @@ const BenefitSection = () => {
               color={"#1C1F4F"}
               bg={"#C7D2FF"}
               className={"fourth-title"}
+              borderColor={"#222123"}
+            />
+            {/* NUEVO: Potenciado con IA */}
+            <ClipPathTitle
+              title={"Potenciado con IA"}
+              color={"#222123"}
+              bg={"#FEC601"}
+              className={"fifth-title   @apply rotate-[1deg] md:-translate-y-12 relative z-10"}
               borderColor={"#222123"}
             />
           </div>

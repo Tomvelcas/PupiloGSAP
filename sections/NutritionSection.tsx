@@ -385,9 +385,6 @@ const NutritionSection = () => {
                                 <div className="absolute inset-0 bg-gradient-to-br from-[#02010a]/75 via-[#27187e]/45 to-transparent mix-blend-multiply" />
                                 <div className="absolute inset-0 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-300 bg-[linear-gradient(135deg,rgba(117,139,253,0.45)_0%,rgba(254,198,1,0.68)_40%,rgba(255,255,255,0)_85%)]" />
 
-                                <span className="relative z-10 self-start mt-2 ml-2 rounded-full bg-white/90 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-[#27187e] shadow-[0_12px_24px_-18px_rgba(39,24,126,0.55)]">
-                                  Logro {i + 1}
-                                </span>
 
                                 <div className="relative z-10 flex items-center justify-center pt-2">
                                   <span className="pointer-events-none absolute inset-[-28%] bg-[radial-gradient(circle,_rgba(254,198,1,0.38)_0%,_rgba(118,129,255,0)_70%)] blur-[36px]" />
