@@ -1,105 +1,111 @@
 'use client';
 
-import { useRef } from "react";
+import { useState, type ChangeEvent } from "react";
 
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { useMediaQuery } from "react-responsive";
 import { flavorlists } from "@/constants";
 
 const FlavorSlider = () => {
-  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const totalFlavors = flavorlists.length;
 
-  const isTablet = useMediaQuery({
-    query: "(max-width: 1024px)",
-  });
+  const handleSelect = (index: number) => {
+    const normalized = (index + totalFlavors) % totalFlavors;
+    setActiveIndex(normalized);
+  };
 
-  useGSAP(
-    () => {
-      const sliderElement = sliderRef.current;
-      if (!sliderElement) return;
+  const handlePrev = () => {
+    handleSelect(activeIndex - 1);
+  };
 
-      const scrollAmount = sliderElement.scrollWidth - window.innerWidth;
+  const handleNext = () => {
+    handleSelect(activeIndex + 1);
+  };
 
-      if (!isTablet) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".flavor-section",
-            start: "2% top",
-            end: `+=${scrollAmount + 1500}px`,
-            scrub: true,
-            pin: true,
-          },
-        });
-
-        tl.to(".flavor-section", {
-          x: `-${scrollAmount + 1500}px`,
-          ease: "power1.inOut",
-        });
-      }
-
-      const titleTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".flavor-section",
-          start: "top top",
-          end: "bottom 80%",
-          scrub: true,
-        },
-      });
-
-      titleTl
-        .to(".first-text-split", {
-          xPercent: -30,
-          ease: "power1.inOut",
-        })
-        .to(
-          ".flavor-text-scroll",
-          {
-            xPercent: -22,
-            ease: "power1.inOut",
-          },
-          "<"
-        )
-        .to(
-          ".second-text-split",
-          {
-            xPercent: -10,
-            ease: "power1.inOut",
-          },
-          "<"
-        );
-    },
-    { dependencies: [isTablet] }
-  );
+  const handleRangeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    handleSelect(Number(event.target.value));
+  };
 
   return (
-    <div ref={sliderRef} className="slider-wrapper">
+    <div className="slider-wrapper">
       <div className="flavors">
-        {flavorlists.map((flavor) => (
-          <div
+        {flavorlists.map((flavor, index) => {
+          const isActive = activeIndex === index;
+          return (
+            <div
+              key={flavor.name}
+              className={`slider-card ${isActive ? "is-active" : ""}`}
+              aria-hidden={!isActive}
+            >
+              <div
+                className={`slider-card-inner ${flavor.rotation} ${flavor.classes?.container ?? ""}`}
+              >
+                <img
+                  src={flavor.art.background}
+                  alt=""
+                  className={`flavor-bg ${flavor.classes?.background ?? ""}`}
+                />
+
+                <img
+                  src={flavor.art.character}
+                  alt=""
+                  className={`drinks ${flavor.classes?.character ?? ""}`}
+                />
+
+                <img
+                  src={flavor.art.elements}
+                  alt=""
+                  className={`elements ${flavor.classes?.elements ?? ""}`}
+                />
+
+                <h1>{flavor.name}</h1>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flavor-controls">
+        <button type="button" onClick={handlePrev} aria-label="Ver mundo anterior">
+          Anterior
+        </button>
+
+        <div className="range-wrapper">
+          <input
+            aria-label="Seleccionar mundo Pupilo"
+            aria-valuemax={totalFlavors - 1}
+            aria-valuemin={0}
+            aria-valuenow={activeIndex}
+            aria-valuetext={flavorlists[activeIndex]?.name}
+            className="flavor-range"
+            max={totalFlavors - 1}
+            min={0}
+            onChange={handleRangeChange}
+            step={1}
+            type="range"
+            value={activeIndex}
+          />
+          <p className="flavor-range-label">{flavorlists[activeIndex]?.name}</p>
+        </div>
+
+        <button type="button" onClick={handleNext} aria-label="Ver mundo siguiente">
+          Siguiente
+        </button>
+      </div>
+
+      <div className="flavor-feed" role="list" aria-label="Mundos Pupilo">
+        {flavorlists.map((flavor, index) => (
+          <button
             key={flavor.name}
-            className={`relative z-30 lg:w-[50vw] w-96 lg:h-[70vh] md:w-[90vw] md:h-[50vh] h-80 flex-none ${flavor.rotation} ${flavor.classes?.container ?? ""}`}
+            type="button"
+            className={`feed-item ${activeIndex === index ? "is-active" : ""}`}
+            onClick={() => handleSelect(index)}
+            aria-label={`Ver ${flavor.name}`}
+            aria-pressed={activeIndex === index}
+            role="listitem"
           >
-            <img
-              src={flavor.art.background}
-              alt=""
-              className={`flavor-bg ${flavor.classes?.background ?? ""}`}
-            />
-
-            <img
-              src={flavor.art.character}
-              alt=""
-              className={`drinks ${flavor.classes?.character ?? ""}`}
-            />
-
-            <img
-              src={flavor.art.elements}
-              alt=""
-              className={`elements ${flavor.classes?.elements ?? ""}`}
-            />
-
-            <h1>{flavor.name}</h1>
-          </div>
+            <span className="feed-index">{String(index + 1).padStart(2, "0")}</span>
+            <span>{flavor.name}</span>
+          </button>
         ))}
       </div>
     </div>
