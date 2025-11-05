@@ -1,14 +1,115 @@
 'use client';
 
 import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { z } from "zod";
+
+const roleOptions = [
+  {
+    id: "direction",
+    label: "Dirección / Coordinación",
+    hint: "Organizo equipos y estrategias",
+    icon: "🏛️",
+  },
+  {
+    id: "therapist",
+    label: "Terapeuta / Docente",
+    hint: "Diseño sesiones y actividades",
+    icon: "🧠",
+  },
+  {
+    id: "family",
+    label: "Padre / Madre de familia",
+    hint: "Busco apoyo y herramientas en casa",
+    icon: "👨‍👩‍👧",
+  },
+  {
+    id: "tech",
+    label: "Aliado tecnológico",
+    hint: "Integro soluciones digitales",
+    icon: "🛠️",
+  },
+  {
+    id: "research",
+    label: "Investigación / Academia",
+    hint: "Exploro impacto y datos",
+    icon: "📚",
+  },
+  {
+    id: "public",
+    label: "Sector público / ONG",
+    hint: "Fortalezco programas sociales",
+    icon: "🤝",
+  },
+  {
+    id: "investor",
+    label: "Inversionista / Partners",
+    hint: "Evalúo alianzas estratégicas",
+    icon: "💡",
+  },
+] as const;
+
+const interestOptions = [
+  {
+    id: "deployment",
+    label: "Implementación en mi institución",
+    hint: "Quiero acompañamiento integral",
+    icon: "🏫",
+  },
+  {
+    id: "activities",
+    label: "Actividades personalizadas para mi hijo/a",
+    hint: "Busco misiones adaptadas",
+    icon: "🎯",
+  },
+  {
+    id: "alliances",
+    label: "Alianzas y contenidos terapéuticos",
+    hint: "Me interesa co-crear recursos",
+    icon: "🧩",
+  },
+  {
+    id: "press",
+    label: "Prensa / Difusión",
+    hint: "Quiero compartir la historia",
+    icon: "📰",
+  },
+  {
+    id: "training",
+    label: "Capacitaciones y talleres para equipos",
+    hint: "Necesito formación especializada",
+    icon: "🎓",
+  },
+  {
+    id: "integrations",
+    label: "Integraciones tecnológicas",
+    hint: "Exploro conexiones con mis sistemas",
+    icon: "🔗",
+  },
+  {
+    id: "love",
+    label: "Simplemente me encantó el proyecto",
+    hint: "Quiero seguir de cerca su evolución",
+    icon: "✨",
+  },
+] as const;
 
 const contactSchema = z.object({
   name: z.string().min(3, "Cuéntanos tu nombre"),
   email: z.string().email("Correo inválido"),
-  role: z.string().min(1, "Selecciona tu rol"),
-  interest: z.string().min(1, "Selecciona un interés"),
+  role: z
+    .string()
+    .refine(
+      (value) => roleOptions.some((option) => option.id === value),
+      "Selecciona tu rol"
+    ),
+  interest: z
+    .string()
+    .refine(
+      (value) => interestOptions.some((option) => option.id === value),
+      "Selecciona un interés"
+    ),
   message: z
     .string()
     .min(10, "Comparte al menos 10 caracteres")
@@ -27,6 +128,8 @@ const defaultValues: ContactFormState = {
 
 const FooterSection = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const roleOptionsMemo = useMemo(() => roleOptions, []);
+  const interestOptionsMemo = useMemo(() => interestOptions, []);
   const [formValues, setFormValues] = useState<ContactFormState>(defaultValues);
   const [formErrors, setFormErrors] = useState<Record<keyof ContactFormState, string>>({
     name: "",
@@ -134,35 +237,23 @@ const FooterSection = () => {
 
                   <label className="wave-field">
                     <span>Rol principal</span>
-                    <select value={formValues.role} onChange={handleChange("role")} required>
-                      <option value="" disabled>
-                        Selecciona una opción
-                      </option>
-                      <option>Dirección / Coordinación</option>
-                      <option>Terapeuta / Docente</option>
-                      <option>Padre / Madre de familia</option>
-                      <option>Aliado tecnológico</option>
-                      <option>Investigación / Academia</option>
-                      <option>Sector público / ONG</option>
-                      <option>Inversionista / Partners</option>
-                    </select>
+                    <WaveSelect
+                      placeholder="Selecciona tu rol"
+                      value={formValues.role}
+                      onChange={(value) => setFormValues((prev) => ({ ...prev, role: value }))}
+                      options={roleOptionsMemo}
+                    />
                     {formErrors.role && <small className="wave-error">{formErrors.role}</small>}
                   </label>
 
                   <label className="wave-field">
                     <span>Interés principal</span>
-                    <select value={formValues.interest} onChange={handleChange("interest")} required>
-                      <option value="" disabled>
-                        ¿Qué te gustaría explorar?
-                      </option>
-                      <option>Implementación en mi institución</option>
-                      <option>Actividades personalizadas para mi hijo/a</option>
-                      <option>Alianzas y contenidos terapéuticos</option>
-                      <option>Prensa / Difusión</option>
-                      <option>Capacitaciones y talleres para equipos</option>
-                      <option>Integraciones tecnológicas</option>
-                      <option>Simplemente me encantó el proyecto</option>
-                    </select>
+                    <WaveSelect
+                      placeholder="¿Qué te gustaría explorar?"
+                      value={formValues.interest}
+                      onChange={(value) => setFormValues((prev) => ({ ...prev, interest: value }))}
+                      options={interestOptionsMemo}
+                    />
                     {formErrors.interest && <small className="wave-error">{formErrors.interest}</small>}
                   </label>
                 </div>
@@ -257,3 +348,99 @@ const FooterSection = () => {
 };
 
 export default FooterSection;
+
+type WaveOption = {
+  id: string;
+  label: string;
+  hint: string;
+  icon: string;
+};
+
+type WaveSelectProps = {
+  value: string;
+  onChange: (value: string) => void;
+  options: readonly WaveOption[];
+  placeholder: string;
+};
+
+const WaveSelect = ({ value, onChange, options, placeholder }: WaveSelectProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        listRef.current &&
+        triggerRef.current &&
+        !listRef.current.contains(event.target as Node) &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const selectedOption = options.find((option) => option.id === value);
+
+  return (
+    <div className={`wave-select ${isOpen ? "open" : ""}`}>
+      <button
+        type="button"
+        className="wave-select-trigger"
+        onClick={() => setIsOpen((prev) => !prev)}
+        ref={triggerRef}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <span className="wave-select-label">
+          {selectedOption ? (
+            <>
+              <span className="wave-select-icon">{selectedOption.icon}</span>
+              <span>
+                {selectedOption.label}
+                <small>{selectedOption.hint}</small>
+              </span>
+            </>
+          ) : (
+            <span className="wave-select-placeholder">{placeholder}</span>
+          )}
+        </span>
+        <span className="wave-select-caret" aria-hidden>
+          ▼
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="wave-select-dropdown" ref={listRef}>
+          <ul role="listbox">
+            {options.map((option) => (
+              <li key={option.id}>
+                <button
+                  type="button"
+                  className={`wave-select-option ${value === option.id ? "active" : ""}`}
+                  onClick={() => {
+                    onChange(option.id);
+                    setIsOpen(false);
+                  }}
+                  role="option"
+                  aria-selected={value === option.id}
+                >
+                  <span className="wave-select-option-icon">{option.icon}</span>
+                  <span className="wave-select-option-copy">
+                    {option.label}
+                    <small>{option.hint}</small>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
