@@ -41,23 +41,23 @@ const flavorlists: FlavorInfo[] = [
 
   },
   {
-    name: "Montaña del Dragón",
-    color: "dragon",
-    rotation: "md:rotate-[8deg] rotate-0",
-    art: {
-      background: "/images/dragon-bg.svg",
-      character: "/images/dragon-pj.svg",
-      elements: "/images/dragon-elements.svg",
-    },
-  },
-  {
     name: "Imperio del Océano",
     color: "sirena",
-    rotation: "md:rotate-[-8deg] rotate-0",
+    rotation: "md:rotate-[8deg] rotate-0",
     art: {
       background: "/images/sirena-bg.svg",
       character: "/images/sirena-pj.svg",
       elements: "/images/sirena-elements.svg",
+    },
+  },
+  {
+    name: "Montaña del Dragón",
+    color: "dragon",
+    rotation: "md:rotate-[-8deg] rotate-0",
+    art: {
+      background: "/images/dragon-bg.svg",
+      character: "/images/dragon-pj.svg",
+      elements: "/images/dragon-elements.svg",
     },
   },
   {
@@ -71,25 +71,24 @@ const flavorlists: FlavorInfo[] = [
     },
   },
   {
-    name: "Mi Héroe del Día",
-    color: "perro",
+    name: "Abismo Estelar",
+    color: "milly",
     rotation: "md:rotate-[-8deg] rotate-0",
+    art: {
+      background: "/images/milly-bg.svg",
+      character: "/images/milly-pj.svg",
+      elements: "/images/milly-elements.svg",
+    },
+  },  {
+    name: "Reino Robot",
+    color: "perro",
+    rotation: "md:rotate-[8deg] rotate-0",
     art: {
       background: "/images/perro-bg.svg",
       character: "/images/perro-pj.svg",
       elements: "/images/perro-elements.svg",
     },
-  },
-  {
-    name: "Baila con Ritmo",
-    color: "black",
-    rotation: "md:rotate-[8deg] rotate-0",
-    art: {
-      background: "/images/black-bg.svg",
-      character: "/images/black-drink.webp",
-      elements: "/images/black-elements.webp",
-    },
-  },
+  }
 ];
 
 const nutrientLists: NutrientInfo[] = [
