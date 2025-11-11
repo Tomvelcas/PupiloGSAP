@@ -203,8 +203,14 @@ const HeroSection = () => {
           </h2>
 
           <div className="hero-cta-group" ref={ctaAreaRef}>
-            <Link href="/login" className="hero-cta-button" ref={ctaRef}>
-              <span className="hero-cta-label">Iniciar sesión</span>
+            <Link
+              href="https://pupilo-react.vercel.app/"
+              className="hero-cta-button"
+              ref={ctaRef}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="hero-cta-label">Ver demo</span>
               <span aria-hidden className="hero-cta-icon">→</span>
             </Link>
           </div>
