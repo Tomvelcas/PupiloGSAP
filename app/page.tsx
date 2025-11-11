@@ -6,6 +6,7 @@ import { ScrollSmoother, ScrollTrigger } from "gsap/all";
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/sections/HeroSection";
 import MessageSection from "@/sections/MessageSection";
+import AboutSection from "@/sections/AboutSection";
 import FlavorSection from "@/sections/FlavorSection";
 import NutritionSection from "@/sections/NutritionSection";
 import BenefitSection from "@/sections/BenefitSection";
@@ -36,6 +37,7 @@ export default function HomePage() {
         <div id="smooth-content">
           <HeroSection />
           <MessageSection />
+          <AboutSection />
           <FlavorSection />
           <NutritionSection />
           <div>

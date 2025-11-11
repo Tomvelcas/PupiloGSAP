@@ -26,6 +26,8 @@ const defaultValues: ContactFormState = {
   message: "",
 };
 
+const defaultSubmitMessage = "Te contactaremos en máximo 24 horas hábiles.";
+
 const FooterSection = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [formValues, setFormValues] = useState<ContactFormState>(defaultValues);
@@ -37,6 +39,7 @@ const FooterSection = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState(defaultSubmitMessage);
 
   const handleChange = (field: keyof ContactFormState) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormValues((prev) => ({
@@ -49,7 +52,7 @@ const FooterSection = () => {
     }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
 
@@ -68,20 +71,27 @@ const FooterSection = () => {
       return;
     }
 
-    const { name, email, role, interest, message } = result.data;
-    const subject = `Quiero hablar con Pupilo - ${name}`;
-    const body = [
-      `Nombre completo: ${name}`,
-      `Correo: ${email}`,
-      `Rol principal: ${role}`,
-      `Interés principal: ${interest}`,
-      "",
-      "Mensaje:",
-      message,
-    ].join("\n");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result.data),
+      });
 
-    window.location.href = `mailto:pupiloaprendeyjuega@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setIsSubmitting(false);
+      if (!response.ok) {
+        throw new Error("No pudimos enviar tu mensaje");
+      }
+
+      setFormValues(defaultValues);
+      setSubmitMessage("¡Gracias! Recibimos tu mensaje y te contactaremos muy pronto.");
+    } catch (error) {
+      console.error(error);
+      setSubmitMessage("No pudimos enviar tu mensaje. Inténtalo nuevamente en unos minutos.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -183,7 +193,7 @@ const FooterSection = () => {
                   <button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? "Enviando..." : "Quiero hablar con Pupilo"}
                   </button>
-                  <small>Te contactaremos en máximo 24 horas hábiles.</small>
+                  <small>{submitMessage}</small>
                 </div>
               </form>
             </div>

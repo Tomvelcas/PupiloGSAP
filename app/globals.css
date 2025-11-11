@@ -554,6 +554,115 @@ body::-webkit-scrollbar {
     }
   }
 
+  .about-section {
+    @apply text-milk relative overflow-hidden -mt-px;
+    background-color: #4059ad;
+
+    .about-transition-band {
+      @apply absolute left-1/2 -translate-x-1/2 top-0 w-[120vw] h-32 md:h-44 rounded-b-[60%] z-0;
+      background: linear-gradient(180deg, #4059ad 0%, #4059ad 80%, rgba(64, 89, 173, 0) 100%);
+      pointer-events: none;
+      transform-origin: top center;
+      will-change: transform;
+      opacity: 0.75;
+    }
+
+    .about-grid {
+      @apply grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12;
+    }
+
+    .about-card {
+      @apply relative flex flex-col justify-between items-center text-center gap-8 rounded-[2.5rem] border border-white/15 p-8 md:p-10 min-h-[22rem] overflow-visible;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
+      box-shadow:
+        0 25px 55px rgba(9, 9, 35, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(18px);
+      transition:
+        transform 0.45s ease,
+        border-color 0.3s ease;
+    }
+
+    .about-card::before {
+      content: "";
+      position: absolute;
+      inset: 1.25rem;
+      border-radius: 2rem;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      pointer-events: none;
+    }
+
+    .about-card-character {
+      @apply absolute -top-[12rem] right-[-2.5rem] md:-top-[16rem] md:-right-[3rem];
+      width: clamp(24rem, 40vw, 32rem);
+      filter: drop-shadow(0 18px 35px rgba(0, 0, 0, 0.35));
+      pointer-events: none;
+    }
+
+    .about-card-character img {
+      width: 100%;
+      height: auto;
+      transform: rotate(6deg);
+    }
+
+    .about-card-swing {
+      @apply absolute pointer-events-none;
+      bottom: -11rem;
+      left: 0;
+      width: clamp(12rem, 26vw, 18rem);
+    }
+
+    .about-card-swing img {
+      width: 100%;
+      height: auto;
+      transform: translate(-4%, 12%) scale(1.08);
+      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.3));
+    }
+
+    .about-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .about-card strong {
+      @apply font-semibold text-milk;
+    }
+
+    .about-card h3 {
+      @apply text-4xl md:text-[2.85rem] font-semibold text-milk tracking-tight transition-all duration-300;
+    }
+
+    .about-card:hover h3 {
+      color: var(--color-highlight);
+      text-shadow: 0 0 24px rgba(254, 198, 1, 0.35);
+      letter-spacing: 0.08em;
+    }
+
+    .about-card-index {
+      @apply absolute text-6xl font-black text-white/10 tracking-[0.3em];
+      top: 2rem;
+      right: 2.5rem;
+      pointer-events: none;
+      font-family: "Antonio", sans-serif;
+    }
+
+    .about-summary {
+      @apply flex flex-col gap-4 leading-relaxed text-center max-w-xl mx-auto;
+    }
+
+    .about-summary p {
+      margin: 0;
+      @apply px-2;
+    }
+
+    .about-emphasis {
+      color: var(--color-highlight);
+      font-weight: 700;
+      text-shadow: 0 0 18px rgba(254, 198, 1, 0.45);
+      letter-spacing: 0.02em;
+    }
+  }
+
   .flavor-section {
     @apply min-h-dvh;
     background-color: var(--color-warm-base);
@@ -576,16 +685,16 @@ body::-webkit-scrollbar {
     }
 
     .slider-wrapper {
-      @apply relative lg:h-dvh min-h-dvh md:min-h-fit w-full mt-0 md:mt-20 xl:mt-0 flex flex-col gap-8 justify-center overflow-hidden;
+      @apply relative lg:h-dvh min-h-dvh md:min-h-fit w-full mt-0 md:mt-20 xl:mt-0 flex flex-col gap-6 justify-center overflow-hidden;
       background-color: var(--color-warm-base);
 
       .flavors {
-        @apply relative w-full h-[26rem] md:h-[50vh] lg:h-[70vh];
+        @apply relative w-full h-[26rem] md:h-[50vh] lg:h-[70vh] flex items-center;
         background-color: var(--color-warm-base);
       }
 
       .slider-card {
-        @apply absolute inset-0 flex w-full justify-center px-5 md:px-10 opacity-0 pointer-events-none select-none transition-all duration-500 ease-out translate-y-6 scale-95;
+        @apply absolute inset-0 flex items-start w-full justify-center px-5 md:px-10 pt-10 md:pt-16 lg:pt-20 opacity-0 pointer-events-none select-none transition-all duration-500 ease-out translate-y-6 scale-95;
         visibility: hidden;
       }
 
@@ -599,7 +708,7 @@ body::-webkit-scrollbar {
       }
 
       .flavor-controls {
-        @apply flex items-center justify-center gap-4 md:gap-6 text-dark-brown;
+        @apply relative z-20 flex items-center justify-center gap-4 md:gap-6 text-dark-brown;
       }
 
       .flavor-controls button {
@@ -643,7 +752,7 @@ body::-webkit-scrollbar {
       }
 
       .flavor-feed {
-        @apply flex flex-wrap justify-center gap-3 md:gap-4;
+        @apply relative z-20 flex flex-wrap justify-center gap-3 md:gap-4;
       }
 
       .feed-item {
