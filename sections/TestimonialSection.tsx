@@ -2,59 +2,72 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+import { useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const TestimonialSection = () => {
-  useGSAP(() => {
-    gsap.set(".testimonials-section", {
-      marginTop: "-140vh",
-    });
+  const sectionRef = useRef<HTMLElement | null>(null);
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".testimonials-section",
-        start: "top bottom",
-        end: "200% top",
-        scrub: true,
-      },
-    });
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
 
-    tl.to(".testimonials-section .first-title", {
-      xPercent: 70,
-    })
-      .to(
-        ".testimonials-section .sec-title",
-        {
-          xPercent: 25,
+      gsap.set(section, {
+        marginTop: "-140vh",
+      });
+
+      const titleTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "200% top",
+          scrub: true,
         },
-        "<"
-      )
-      .to(
-        ".testimonials-section .third-title",
-        {
-          xPercent: -50,
+      });
+
+      titleTimeline
+        .to(".first-title", {
+          xPercent: 70,
+        })
+        .to(
+          ".sec-title",
+          {
+            xPercent: 25,
+          },
+          "<"
+        )
+        .to(
+          ".third-title",
+          {
+            xPercent: -50,
+          },
+          "<"
+        );
+
+      const cardTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "10% top",
+          end: "200% top",
+          scrub: 1.5,
+          pin: true,
         },
-        "<"
-      );
+      });
 
-    const pinTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".testimonials-section",
-        start: "10% top",
-        end: "200% top",
-        scrub: 1.5,
-        pin: true,
-      },
-    });
-
-    pinTl.from(".vd-card", {
-      yPercent: 150,
-      stagger: 0.2,
-      ease: "power1.inOut",
-    });
-  });
+      cardTimeline.from(".vd-card", {
+        yPercent: 150,
+        stagger: 0.2,
+        ease: "power1.inOut",
+      });
+    },
+    { scope: sectionRef }
+  );
 
   return (
-    <section className="testimonials-section">
+    <section className="testimonials-section" ref={sectionRef}>
       <div className="absolute size-full flex flex-col items-center pt-[5vw]">
         <h1 className="text-black first-title">LO QUE</h1>
         <h1 className="sec-title" style={{ color: "var(--color-highlight)" }}>
