@@ -26,8 +26,6 @@ const defaultValues: ContactFormState = {
   message: "",
 };
 
-const defaultSubmitMessage = "Te contactaremos en máximo 24 horas hábiles.";
-
 const FooterSection = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [formValues, setFormValues] = useState<ContactFormState>(defaultValues);
@@ -39,7 +37,6 @@ const FooterSection = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState(defaultSubmitMessage);
 
   const handleChange = (field: keyof ContactFormState) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormValues((prev) => ({
@@ -52,7 +49,7 @@ const FooterSection = () => {
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
 
@@ -71,27 +68,20 @@ const FooterSection = () => {
       return;
     }
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(result.data),
-      });
+    const { name, email, role, interest, message } = result.data;
+    const subject = `Quiero hablar con Pupilo - ${name}`;
+    const body = [
+      `Nombre completo: ${name}`,
+      `Correo: ${email}`,
+      `Rol principal: ${role}`,
+      `Interés principal: ${interest}`,
+      "",
+      "Mensaje:",
+      message,
+    ].join("\n");
 
-      if (!response.ok) {
-        throw new Error("No pudimos enviar tu mensaje");
-      }
-
-      setFormValues(defaultValues);
-      setSubmitMessage("¡Gracias! Recibimos tu mensaje y te contactaremos muy pronto.");
-    } catch (error) {
-      console.error(error);
-      setSubmitMessage("No pudimos enviar tu mensaje. Inténtalo nuevamente en unos minutos.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    window.location.href = `mailto:pupiloaprendeyjuega@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setIsSubmitting(false);
   };
 
   return (
@@ -193,7 +183,7 @@ const FooterSection = () => {
                   <button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? "Enviando..." : "Quiero hablar con Pupilo"}
                   </button>
-                  <small>{submitMessage}</small>
+                  <small>Te contactaremos en máximo 24 horas hábiles.</small>
                 </div>
               </form>
             </div>
